@@ -68,6 +68,13 @@ of Sharp brand TVs.  It is implemented in the the Go programming lanugage.
 		Long: `Adjust the sound volume for the television.
 
 You may find that a lower volume is more pleasant at night.
+
+Examples:
+
+	sharptv volume 0    # Effectively mutes without showing the mute icon
+	sharptv volume 25   # Set TV to a little less than half volume.
+	sharptv volume 60   # Blast the volume as loud as it will go!
+	sharptv volume down # Reduce the volume by owe
     `,
 		Run: func(cmd *cobra.Command, args []string) {
 
