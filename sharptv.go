@@ -1,6 +1,7 @@
 package main
 
 import "github.com/spf13/cobra"
+import "github.com/spf13/viper"
 import "fmt"
 import "os"
 import "net"
@@ -10,7 +11,6 @@ import "strconv"
 
 func sendToTV(sharpCommand string, sharpParameter string) {
 
-	debug := true
 	cmdString := fmt.Sprintf("%4s%-4s\r", sharpCommand, sharpParameter)
 	conn, err := net.Dial("tcp", "192.168.4.11:10002")
 
@@ -19,7 +19,7 @@ func sendToTV(sharpCommand string, sharpParameter string) {
 		return
 	}
 
-	if debug {
+	if viper.GetBool("debug") {
 		fmt.Printf("Sending command %v\n", cmdString)
 	}
 
@@ -28,7 +28,7 @@ func sendToTV(sharpCommand string, sharpParameter string) {
 		fmt.Println("An error occured.")
 		fmt.Println(err.Error())
 	} else {
-		if debug {
+		if viper.GetBool("debug") {
 			fmt.Printf(">>>> Sent %v\n", cmdString)
 		}
 	}
@@ -38,7 +38,7 @@ func sendToTV(sharpCommand string, sharpParameter string) {
 	if err != nil {
 		fmt.Println(err.Error())
 	} else {
-		if debug {
+		if viper.GetBool("debug") {
 			fmt.Printf(">>>> Received: %s %s\n", tmp, string(result))
 		}
 
@@ -47,6 +47,20 @@ func sendToTV(sharpCommand string, sharpParameter string) {
 }
 
 func main() {
+
+	viper.SetConfigName("config")
+	viper.AddConfigPath("$HOME/.sharptv")
+	viper.SetDefault("debug", false)
+
+	err := viper.ReadInConfig() // Find and read the config file
+	if err != nil { // Handle errors reading the config file
+    panic(fmt.Errorf("Fatal error config file: %s \n", err))
+}
+
+	if viper.GetBool("debug") {
+    fmt.Println("debug enabled")
+}
+
 
 	var sharptvCmd = &cobra.Command{
 		Use:   "sharptv",
