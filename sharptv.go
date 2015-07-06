@@ -4,6 +4,7 @@ import "github.com/spf13/cobra"
 import "fmt"
 import "os"
 import "net"
+import "strconv"
 
 // import "bufio"
 
@@ -22,7 +23,7 @@ func sendToTV(sharpCommand string, sharpParameter string) {
 		fmt.Printf("Sending command %v\n", cmdString)
 	}
 
-		fmt.Fprintf(conn, cmdString)
+	fmt.Fprintf(conn, cmdString)
 	if err != nil {
 		fmt.Println("An error occured.")
 		fmt.Println(err.Error())
@@ -37,8 +38,8 @@ func sendToTV(sharpCommand string, sharpParameter string) {
 	if err != nil {
 		fmt.Println(err.Error())
 	} else {
-		if debug{
-		fmt.Printf(">>>> Received: %s %s\n", tmp, string(result))
+		if debug {
+			fmt.Printf(">>>> Received: %s %s\n", tmp, string(result))
 		}
 
 	}
@@ -69,35 +70,40 @@ of Sharp brand TVs.  It is implemented in the the Go programming lanugage.
 You may find that a lower volume is more pleasant at night.
     `,
 		Run: func(cmd *cobra.Command, args []string) {
-			if len(args) == 1 {
-				fmt.Printf("Setting volume to %v\n", args[0])
-				sendToTV("VOLM", args[0])
-			} else if len(args) == 0 {
-				sendToTV("VOLM", "?")
-			} else {
+
+			if len(args) != 1 {
 				cmd.Usage()
 				os.Exit(1)
 			}
-		},
-	}
-	var cmdVolumeDown = &cobra.Command{
-		Use:   "voldown",
-		Short: "Sends a volume down button press",
-		Long: `Adjust the sound volume for the television.
 
-You may find that a lower volume is more pleasant at night.
-    `,
-		Run: func(cmd *cobra.Command, args []string) {
-			if len(args) == 0 {
+			numerical_argument, err := strconv.Atoi(args[0])
+			if err == nil {
+				if (numerical_argument > -1 && numerical_argument < 61) {
+					fmt.Printf("Setting volume to %v\n", args[0])
+					sendToTV("VOLM", args[0])
+				} else {
+					fmt.Printf("Volume specificed is out of range 0 to 60")
+					return
+				}
+				return
+			}
+
+			switch {
+
+			case args[0] == "down":
 				fmt.Println("Reducing the volume")
 				sendToTV("RCKY", "32")
-			} else {
-				cmd.Usage()
-				os.Exit(1)
+
+			case args[0] == "up":
+				fmt.Println("Reducing the volume")
+				sendToTV("RCKY", "33")
+
+			default:
+				cmd.Usage();
 			}
+
 		},
 	}
-
 
 	var cmdMute = &cobra.Command{
 		Use:   "mute {on|off}",
