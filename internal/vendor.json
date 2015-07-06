@@ -1,0 +1,12 @@
+{
+	"comment": "",
+	"package": [
+		{
+			"canonical": "github.com/spf13/cobra",
+			"comment": "",
+			"local": "github.com/golliher/go-sharptv/internal/github.com/spf13/cobra",
+			"revision": "385fc87e4343efec233811d3d933509e8975d11a",
+			"revisionTime": "2015-06-29T19:11:20-05:00"
+		}
+	]
+}
