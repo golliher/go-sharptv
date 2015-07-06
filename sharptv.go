@@ -12,7 +12,11 @@ import "strconv"
 func sendToTV(sharpCommand string, sharpParameter string) {
 
 	cmdString := fmt.Sprintf("%4s%-4s\r", sharpCommand, sharpParameter)
-	conn, err := net.Dial("tcp", "192.168.4.11:10002")
+
+	address := viper.GetString("ipaddress")
+	port 	  := viper.GetString("port")
+	connect_string := fmt.Sprintf("%s:%s",address,port)
+	conn, err := net.Dial("tcp", connect_string)
 
 	if err != nil {
 		fmt.Println("Error connecting to TV.")
@@ -51,6 +55,7 @@ func main() {
 	viper.SetConfigName("config")
 	viper.AddConfigPath("$HOME/.sharptv")
 	viper.SetDefault("debug", false)
+	viper.SetDefault("port", "10002")
 
 	err := viper.ReadInConfig() // Find and read the config file
 	if err != nil { // Handle errors reading the config file
