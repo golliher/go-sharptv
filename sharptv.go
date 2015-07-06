@@ -63,7 +63,7 @@ of Sharp brand TVs.  It is implemented in the the Go programming lanugage.
 	}
 
 	var cmdVolume = &cobra.Command{
-		Use:   "volume [integer volume level to set]",
+		Use:   "volume {0..60|up|down}",
 		Short: "Set the volume level of the TV.",
 		Long: `Adjust the sound volume for the television.
 
@@ -88,14 +88,14 @@ You may find that a lower volume is more pleasant at night.
 				return
 			}
 
-			switch {
+			switch args[0] {
 
-			case args[0] == "down":
+			case "down":
 				fmt.Println("Reducing the volume")
 				sendToTV("RCKY", "32")
 
-			case args[0] == "up":
-				fmt.Println("Reducing the volume")
+			case "up":
+				fmt.Println("Increasing the volume")
 				sendToTV("RCKY", "33")
 
 			default:
@@ -180,6 +180,5 @@ You may find that a lower volume is more pleasant at night.
 	sharptvCmd.AddCommand(cmdMute)
 	sharptvCmd.AddCommand(cmdInput)
 	sharptvCmd.AddCommand(cmdVolume)
-	sharptvCmd.AddCommand(cmdVolumeDown)
-	sharptvCmd.Execute()
+		sharptvCmd.Execute()
 }
