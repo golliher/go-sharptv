@@ -7,15 +7,20 @@ import "os"
 import "net"
 import "strconv"
 
-// import "bufio"
+// Flags that are to be added to commands
+var ip, port string
 
 func sendToTV(sharpCommand string, sharpParameter string) {
 
 	cmdString := fmt.Sprintf("%4s%-4s\r", sharpCommand, sharpParameter)
 
-	address := viper.GetString("ipaddress")
-	port 	  := viper.GetString("port")
-	connect_string := fmt.Sprintf("%s:%s",address,port)
+	ip = viper.GetString("ip")
+	port = viper.GetString("port")
+
+	connect_string := fmt.Sprintf("%s:%s", ip, port)
+	if viper.GetBool("debug") {
+		fmt.Printf("Connecting to TV at %s\n", connect_string)
+	}
 	conn, err := net.Dial("tcp", connect_string)
 
 	if err != nil {
@@ -47,25 +52,9 @@ func sendToTV(sharpCommand string, sharpParameter string) {
 		}
 
 	}
-
 }
 
 func main() {
-
-	viper.SetConfigName("config")
-	viper.AddConfigPath("$HOME/.sharptv")
-	viper.SetDefault("debug", false)
-	viper.SetDefault("port", "10002")
-
-	err := viper.ReadInConfig() // Find and read the config file
-	if err != nil { // Handle errors reading the config file
-    panic(fmt.Errorf("Fatal error config file: %s \n", err))
-}
-
-	if viper.GetBool("debug") {
-    fmt.Println("debug enabled")
-}
-
 
 	var sharptvCmd = &cobra.Command{
 		Use:   "sharptv",
@@ -79,6 +68,25 @@ of Sharp brand TVs.  It is implemented in the the Go programming lanugage.
 		Run: func(cmd *cobra.Command, args []string) {
 			fmt.Println("SharpTV command line remote control.")
 		},
+	}
+	viper.SetConfigName("config")
+	viper.AddConfigPath("$HOME/.sharptv")
+	viper.SetDefault("debug", false)
+
+	// sharptvCmd.PersistentFlags().StringVarP(&port, "port", "p", "10003", "Port for TV API. Defaults to 10002")
+	// viper.BindPFlag("port", sharptvCmd.Flags().Lookup("port"))
+	//
+	// sharptvCmd.PersistentFlags().StringVar(&ip, "ip", "television ip address", "IP address for TV API.")
+	// viper.BindPFlag("ip", sharptvCmd.Flags().Lookup("ip"))
+
+
+	err := viper.ReadInConfig() // Find and read the config file
+	if err != nil {             // Handle errors reading the config file
+		panic(fmt.Errorf("Fatal error config file: %s \n", err))
+	}
+
+	if viper.GetBool("debug") {
+		fmt.Println("debug enabled")
 	}
 
 	var cmdVolume = &cobra.Command{
@@ -104,7 +112,7 @@ Examples:
 
 			numerical_argument, err := strconv.Atoi(args[0])
 			if err == nil {
-				if (numerical_argument > -1 && numerical_argument < 61) {
+				if numerical_argument > -1 && numerical_argument < 61 {
 					fmt.Printf("Setting volume to %v\n", args[0])
 					sendToTV("VOLM", args[0])
 				} else {
@@ -125,7 +133,7 @@ Examples:
 				sendToTV("RCKY", "33")
 
 			default:
-				cmd.Usage();
+				cmd.Usage()
 			}
 
 		},
@@ -202,9 +210,10 @@ Examples:
 			}
 		},
 	}
+
 	sharptvCmd.AddCommand(cmdPower)
 	sharptvCmd.AddCommand(cmdMute)
 	sharptvCmd.AddCommand(cmdInput)
 	sharptvCmd.AddCommand(cmdVolume)
-		sharptvCmd.Execute()
+	sharptvCmd.Execute()
 }
