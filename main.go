@@ -7,19 +7,36 @@ import (
 	"github.com/spf13/viper"
 )
 
-// Flags that are to be added to commands
-// var ip, port string
-
 func main() {
 
+	// Set config file
 	viper.SetConfigName("config")
-	viper.AddConfigPath("$HOME/.sharptv")
-	viper.SetDefault("debug", false)
 
+	// Add config path
+	viper.AddConfigPath("$HOME/.sharptv")
+
+	// Read in the config
 	err := viper.ReadInConfig() // Find and read the config file
 	if err != nil {             // Handle errors reading the config file
 		panic(fmt.Errorf("Fatal error config file: %s \n", err))
 	}
+
+	// Load default settings
+	viper.SetDefault("debug", false)
+
+	viper.SetEnvPrefix("gosharptv") // will be uppercased automatically
+	viper.BindEnv("debug")
+	viper.BindEnv("ip")
+	viper.BindEnv("port")
+
+	if viper.IsSet("ip") {
+		ip := viper.GetString("ip")
+		fmt.Printf("IP of TV to connect to: %s\n", ip)
+	}
+
+	// Do some flag handling and any complicated config logic
+
+	// Start using configuration
 
 	if viper.GetBool("debug") {
 		fmt.Println("debug enabled")
