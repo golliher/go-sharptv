@@ -1,11 +1,14 @@
 package main
 
-import "github.com/spf13/cobra"
-import "github.com/spf13/viper"
-import "fmt"
-import "os"
-import "net"
-import "strconv"
+import (
+	"fmt"
+	"net"
+	"os"
+	"strconv"
+
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+)
 
 // Flags that are to be added to commands
 var ip, port string
@@ -78,7 +81,6 @@ of Sharp brand TVs.  It is implemented in the the Go programming lanugage.
 	//
 	// sharptvCmd.PersistentFlags().StringVar(&ip, "ip", "television ip address", "IP address for TV API.")
 	// viper.BindPFlag("ip", sharptvCmd.Flags().Lookup("ip"))
-
 
 	err := viper.ReadInConfig() // Find and read the config file
 	if err != nil {             // Handle errors reading the config file
