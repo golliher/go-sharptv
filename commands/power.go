@@ -16,7 +16,18 @@ var cmdPower = &cobra.Command{
 
 		switch {
 		case len(args) == 0:
-			fmt.Println("Toggling Power is not yet implemented.")
+			{
+				// Toggle power if now argument given to power command
+				result := tvapi.SendToTV("POWR", "?")
+				switch result {
+				case "1":
+					tvapi.SendToTV("POWR", "0")
+				case "0":
+					tvapi.SendToTV("POWR", "1")
+				default:
+					fmt.Printf("Warning: unexpected result >%v<\n\n", result)
+				}
+			}
 		case len(args) > 1:
 			cmd.Usage()
 		case args[0] == "on":

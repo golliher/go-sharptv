@@ -48,6 +48,7 @@ func SendToTV(sharpCommand string, sharpParameter string) string {
 		if viper.GetBool("debug") {
 			fmt.Printf(">>>> Received: %s %s\n", api_result, string(result))
 		}
+		conn.Close()
 		return string(string(api_result)[0])
 	}
 	return "no result"
