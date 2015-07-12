@@ -9,7 +9,7 @@ import (
 
 var ip, port string
 
-func SendToTV(sharpCommand string, sharpParameter string) {
+func SendToTV(sharpCommand string, sharpParameter string) string {
 	cmdString := fmt.Sprintf("%4s%-4s\r", sharpCommand, sharpParameter)
 
 	ip = viper.GetString("ip")
@@ -23,7 +23,7 @@ func SendToTV(sharpCommand string, sharpParameter string) {
 
 	if err != nil {
 		fmt.Println("Error connecting to TV.")
-		return
+		return ("Error connecting to TV")
 	}
 
 	if viper.GetBool("debug") {
@@ -40,14 +40,15 @@ func SendToTV(sharpCommand string, sharpParameter string) {
 		}
 	}
 
-	tmp := make([]byte, 256)
-	result, err := conn.Read(tmp)
+	api_result := make([]byte, 256)
+	result, err := conn.Read(api_result)
 	if err != nil {
 		fmt.Println(err.Error())
 	} else {
 		if viper.GetBool("debug") {
-			fmt.Printf(">>>> Received: %s %s\n", tmp, string(result))
+			fmt.Printf(">>>> Received: %s %s\n", api_result, string(result))
 		}
-
+		return string(string(api_result)[0])
 	}
+	return "no result"
 }
