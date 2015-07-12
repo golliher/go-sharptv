@@ -13,6 +13,7 @@ var cmdPower = &cobra.Command{
 	Long: `Powers the TV off or on.  If neither subcommand of either "off" nor "on" are
   specfified, then the power will be toggled from it's current state.`,
 	Run: func(cmd *cobra.Command, args []string) {
+
 		switch {
 		case len(args) == 0:
 			fmt.Println("Toggling Power is not yet implemented.")
@@ -24,8 +25,20 @@ var cmdPower = &cobra.Command{
 		case args[0] == "off":
 			fmt.Println("Turning off the TV.")
 			tvapi.SendToTV("POWR", "0")
+
 		case args[0] == "status":
-			tvapi.SendToTV("POWR", "?")
+
+			result := tvapi.SendToTV("POWR", "?")
+
+			switch result {
+			case "1":
+				fmt.Println("TV is ON")
+			case "0":
+				fmt.Println("TV is OFF")
+			default:
+				fmt.Printf("Warning: unexpected result >%v<\n\n", result)
+			}
+
 		default:
 			cmd.Usage()
 		}

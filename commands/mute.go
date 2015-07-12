@@ -30,7 +30,15 @@ var cmdMute = &cobra.Command{
 			tvapi.SendToTV("MUTE", "0002")
 
 		case args[0] == "status":
-			tvapi.SendToTV("MUTE", "?")
+			result := tvapi.SendToTV("MUTE", "?")
+			switch result {
+			case "1":
+				fmt.Println("TV is muted")
+			case "2":
+				fmt.Println("TV is not muted")
+			default:
+				fmt.Printf("Warning: unexpected result >%v<\n\n", result)
+			}
 
 		}
 	},
