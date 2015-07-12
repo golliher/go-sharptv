@@ -36,6 +36,10 @@ func main() {
 		os.Exit(1)
 	}
 
+	// Setup global flags
+	commands.SharptvCmd.PersistentFlags().BoolP("debug", "d", false, "Print debug messages")
+	viper.BindPFlag("debug", commands.SharptvCmd.PersistentFlags().Lookup("debug"))
+
 	// Start using configuration
 
 	if viper.GetBool("debug") {
