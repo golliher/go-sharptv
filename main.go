@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/golliher/go-sharptv/commands"
 	"github.com/spf13/viper"
@@ -29,12 +30,11 @@ func main() {
 	viper.BindEnv("ip")
 	viper.BindEnv("port")
 
-	if viper.IsSet("ip") {
-		ip := viper.GetString("ip")
-		fmt.Printf("IP of TV to connect to: %s\n", ip)
-	}
-
 	// Do some flag handling and any complicated config logic
+	if !viper.IsSet("ip") || !viper.IsSet("port") {
+		fmt.Println("Configuration error.  Both IP and PORT must be set via either config, environment, or flags.")
+		os.Exit(1)
+	}
 
 	// Start using configuration
 
