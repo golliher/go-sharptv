@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/golliher/go-sharptv/commands"
-	"github.com/spf13/viper"
+	"github.com/golliher/go-sharptv/internal/github.com/spf13/viper"
 )
 
 func main() {

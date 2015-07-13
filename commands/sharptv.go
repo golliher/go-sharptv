@@ -3,7 +3,7 @@ package commands
 import (
 	"fmt"
 
-	"github.com/spf13/cobra"
+	"github.com/golliher/go-sharptv/internal/github.com/spf13/cobra"
 )
 
 var SharptvCmd = &cobra.Command{

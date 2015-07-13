@@ -5,7 +5,7 @@ import (
 
 	"github.com/golliher/go-sharptv/tvapi"
 
-	"github.com/spf13/cobra"
+	"github.com/golliher/go-sharptv/internal/github.com/spf13/cobra"
 )
 
 var cmdMute = &cobra.Command{
