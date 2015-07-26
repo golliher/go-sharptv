@@ -9,17 +9,18 @@ import (
 
 var ip, port string
 
+// Use SentToTV to send Sharp Aquos API calls to the Television over the network
 func SendToTV(sharpCommand string, sharpParameter string) string {
 	cmdString := fmt.Sprintf("%4s%-4s\r", sharpCommand, sharpParameter)
 
 	ip = viper.GetString("ip")
 	port = viper.GetString("port")
 
-	connect_string := fmt.Sprintf("%s:%s", ip, port)
+	connectString := fmt.Sprintf("%s:%s", ip, port)
 	if viper.GetBool("debug") {
-		fmt.Printf("Connecting to TV at %s\n", connect_string)
+		fmt.Printf("Connecting to TV at %s\n", connectString)
 	}
-	conn, err := net.Dial("tcp", connect_string)
+	conn, err := net.Dial("tcp", connectString)
 
 	if err != nil {
 		fmt.Println("Error connecting to TV.")

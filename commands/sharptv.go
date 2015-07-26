@@ -6,6 +6,7 @@ import (
 	"github.com/golliher/go-sharptv/internal/github.com/spf13/cobra"
 )
 
+// SharptvCmd is the root command
 var SharptvCmd = &cobra.Command{
 	Use:   "sharptv",
 	Short: "sharptv is your command line interface to your television set",
