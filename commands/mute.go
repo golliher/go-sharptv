@@ -36,6 +36,8 @@ var cmdMute = &cobra.Command{
 				fmt.Println("TV is muted")
 			case "2":
 				fmt.Println("TV is not muted")
+			case "ERR":
+				fmt.Println("TV responded with ERR.   Is it on?")
 			default:
 				fmt.Printf("Warning: unexpected result >%v<\n\n", result)
 			}
