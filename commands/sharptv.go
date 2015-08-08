@@ -52,6 +52,7 @@ func InitializeConfig() {
 		os.Exit(1)
 	}
 
+	// BUG(golliher):  I broke flags when I moved configuration into commands package instead of main globals
 	// Setup global flags
 	// commands.SharptvCmd.PersistentFlags().BoolP("debug", "d", false, "Print debug messages")
 	// viper.BindPFlag("debug", commands.SharptvCmd.PersistentFlags().Lookup("debug"))
