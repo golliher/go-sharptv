@@ -35,7 +35,7 @@ func Send(sharpCommand string, sharpParameter string, ip string, port string) st
 	bytesRead, err := conn.Read(apiResult)
 	if err != nil {
 		fmt.Println(err.Error())
-		fmt.Printf("Only red in %d bytes:", bytesRead)
+		fmt.Printf("Only read in %d bytes:", bytesRead)
 
 	} else {
 		resultString := parseResult(apiResult)
