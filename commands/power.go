@@ -3,9 +3,59 @@ package commands
 import (
 	"fmt"
 
-	"github.com/golliher/go-sharptv/tvapi"
 	"github.com/golliher/go-sharptv/internal/github.com/spf13/cobra"
+	"github.com/golliher/go-sharptv/tvapi"
 )
+
+var cmdOff = &cobra.Command{
+	Use:   "off",
+	Short: "Turn the TV off",
+	Long:  `Powers the TV off.  It is equivalent to the command "power off".`,
+	Run: func(cmd *cobra.Command, args []string) {
+
+		switch {
+		case len(args) == 0:
+			{
+				result := tvapi.SendToTV("POWR", "0")
+				switch result {
+				case "ERR":
+					fmt.Println("Something went wrong.  Attempted to turn TV off and failed.")
+				case "OK":
+					return
+				default:
+					fmt.Printf("Warning: unexpected result >%v<\n\n", result)
+				}
+			}
+		default:
+			cmd.Usage()
+		}
+	},
+}
+
+var cmdOn = &cobra.Command{
+	Use:   "on",
+	Short: "Turn the TV on",
+	Long:  `Powers the TV on.  It is equivalent to the command "power on".`,
+	Run: func(cmd *cobra.Command, args []string) {
+
+		switch {
+		case len(args) == 0:
+			{
+				result := tvapi.SendToTV("POWR", "1")
+				switch result {
+				case "ERR":
+					fmt.Println("Something went wrong.  Attempted to turn TV on and failed.")
+				case "OK":
+					return
+				default:
+					fmt.Printf("Warning: unexpected result >%v<\n\n", result)
+				}
+			}
+		default:
+			cmd.Usage()
+		}
+	},
+}
 
 var cmdPower = &cobra.Command{
 	Use:   "power {on|off}",
@@ -58,4 +108,7 @@ var cmdPower = &cobra.Command{
 
 func init() {
 	SharptvCmd.AddCommand(cmdPower)
+	SharptvCmd.AddCommand(cmdOn)
+	SharptvCmd.AddCommand(cmdOff)
+
 }
