@@ -3,13 +3,20 @@ package tvapi
 import (
 	"fmt"
 	"net"
+	"strings"
 
 	"github.com/golliher/go-sharptv/internal/github.com/spf13/viper"
 )
 
 var ip, port string
 
-// Use SentToTV to send Sharp Aquos API calls to the Television over the network
+// Pull out the characters up to the first \r
+func parseResult(resultstring []byte) string {
+	parsed := strings.Split(string(resultstring), "\r")
+	return parsed[0]
+}
+
+// SendToTV transmits Sharp Aquos API commands to the Television over the network
 func SendToTV(sharpCommand string, sharpParameter string) string {
 	cmdString := fmt.Sprintf("%4s%-4s\r", sharpCommand, sharpParameter)
 
@@ -41,16 +48,19 @@ func SendToTV(sharpCommand string, sharpParameter string) string {
 		}
 	}
 
-	api_result := make([]byte, 256)
-	result, err := conn.Read(api_result)
+	apiResult := make([]byte, 32)
+	bytesRead, err := conn.Read(apiResult)
 	if err != nil {
 		fmt.Println(err.Error())
 	} else {
+
+		resultString := parseResult(apiResult)
+
 		if viper.GetBool("debug") {
-			fmt.Printf(">>>> Received: %s %s\n", api_result, string(result))
+			fmt.Printf(">>>> Received: %s Bytes: %v\n", resultString, bytesRead)
 		}
 		conn.Close()
-		return string(string(api_result)[0])
+		return resultString
 	}
 	return "no result"
 }
