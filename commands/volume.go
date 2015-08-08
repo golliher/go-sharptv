@@ -53,6 +53,14 @@ Examples:
 			fmt.Println("Increasing the volume")
 			sendToTV("RCKY", "33")
 
+		case "status":
+			result := sendToTV("VOLM", "?")
+			if result != "ERR" {
+				fmt.Printf("Volume is: %v\n", result)
+			} else {
+				fmt.Println("Unable to determine current volume.")
+			}
+
 		default:
 			cmd.Usage()
 		}
