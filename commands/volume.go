@@ -6,7 +6,6 @@ import (
 	"strconv"
 
 	"github.com/golliher/go-sharptv/internal/github.com/spf13/cobra"
-	"github.com/golliher/go-sharptv/tvapi"
 )
 
 var cmdVolume = &cobra.Command{
@@ -30,11 +29,13 @@ Examples:
 			os.Exit(1)
 		}
 
+		InitializeConfig()
+
 		numericalArgument, err := strconv.Atoi(args[0])
 		if err == nil {
 			if numericalArgument > -1 && numericalArgument < 61 {
 				fmt.Printf("Setting volume to %v\n", args[0])
-				tvapi.SendToTV("VOLM", args[0])
+				sendToTV("VOLM", args[0])
 			} else {
 				fmt.Printf("Volume specificed is out of range 0 to 60")
 				return
@@ -46,11 +47,11 @@ Examples:
 
 		case "down":
 			fmt.Println("Reducing the volume")
-			tvapi.SendToTV("RCKY", "32")
+			sendToTV("RCKY", "32")
 
 		case "up":
 			fmt.Println("Increasing the volume")
-			tvapi.SendToTV("RCKY", "33")
+			sendToTV("RCKY", "33")
 
 		default:
 			cmd.Usage()

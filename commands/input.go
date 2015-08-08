@@ -3,7 +3,6 @@ package commands
 import (
 	"fmt"
 
-	"github.com/golliher/go-sharptv/tvapi"
 	"github.com/golliher/go-sharptv/internal/github.com/spf13/cobra"
 )
 
@@ -14,11 +13,14 @@ var cmdInput = &cobra.Command{
 
   `,
 	Run: func(cmd *cobra.Command, args []string) {
+
+		InitializeConfig()
+
 		switch {
 
 		case len(args) == 1:
 			fmt.Printf("Setting input source to %v\n", args[0])
-			tvapi.SendToTV("IAVD", args[0])
+			sendToTV("IAVD", args[0])
 
 		case len(args) != 1:
 			cmd.Usage()

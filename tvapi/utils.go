@@ -8,7 +8,7 @@ import (
 	"github.com/golliher/go-sharptv/internal/github.com/spf13/viper"
 )
 
-var ip, port string
+// var ip, port string
 
 // Pull out the characters up to the first \r
 func parseResult(resultstring []byte) string {
@@ -16,12 +16,9 @@ func parseResult(resultstring []byte) string {
 	return parsed[0]
 }
 
-// SendToTV transmits Sharp Aquos API commands to the Television over the network
-func SendToTV(sharpCommand string, sharpParameter string) string {
+// Send transmits Sharp Aquos API commands to the Television over the network
+func Send(sharpCommand string, sharpParameter string, ip string, port string) string {
 	cmdString := fmt.Sprintf("%4s%-4s\r", sharpCommand, sharpParameter)
-
-	ip = viper.GetString("ip")
-	port = viper.GetString("port")
 
 	connectString := fmt.Sprintf("%s:%s", ip, port)
 	if viper.GetBool("debug") {
