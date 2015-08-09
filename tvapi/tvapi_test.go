@@ -23,9 +23,9 @@ func Example_ParseResult() {
 //  The succeed or fail depending on the status of the whole system.
 
 func TestSendValidIP(t *testing.T) {
-	result := Send("MUTE", "0001", "192.168.4.11", "10002")
-	if result != "OK" {
-		msg := fmt.Sprintf("Expected 'OK', got %s", result)
+	result := Send("MUTE", "?", "192.168.4.11", "10002")
+	if result != "2" {
+		msg := fmt.Sprintf("Expected '2', got %s", result)
 		t.Error(msg)
 	}
 }

@@ -18,7 +18,7 @@ func Send(sharpCommand string, sharpParameter string, ip string, port string) st
 	cmdString := fmt.Sprintf("%4s%-4s\r", sharpCommand, sharpParameter)
 
 	connectString := fmt.Sprintf("%s:%s", ip, port)
-	conn, err := net.DialTimeout("tcp", connectString, time.Duration(10*time.Millisecond))
+	conn, err := net.DialTimeout("tcp", connectString, time.Duration(100*time.Millisecond))
 
 	if err != nil {
 		fmt.Println("Error connecting to TV.")
