@@ -19,8 +19,25 @@ var cmdInput = &cobra.Command{
 		switch {
 
 		case len(args) == 1:
-			fmt.Printf("Setting input source to %v\n", args[0])
-			sendToTV("IAVD", args[0])
+			switch args[0] {
+
+			case "status":
+				result := sendToTV("IAVD", "?")
+				if result != "ERR" {
+					fmt.Printf("Input is: %s\n", result)
+				}
+			case "tv":
+				result := sendToTV("ITVD", "0")
+				if result == "OK" {
+					fmt.Println("Switched input TV")
+				} else {
+					fmt.Println("Unable to switch to TV")
+				}
+			default:
+				fmt.Printf("Setting input source to %v\n", args[0])
+				sendToTV("IAVD", args[0])
+
+			}
 
 		case len(args) != 1:
 			cmd.Usage()
