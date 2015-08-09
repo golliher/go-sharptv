@@ -7,10 +7,11 @@ import (
 )
 
 var cmdMute = &cobra.Command{
-	Use:   "mute {on|off}",
+	Use:   "mute {on|off|status}",
 	Short: "Turn the volume of the TV off or on",
 	Long: `Mutes or unmutes the television.  If not subcommand of either "off" or "on" are
-  specfified, then the mute will be toggled from it's current state.`,
+  specfified, then the mute will be toggled from it's current state.  If "status" is
+	specified, then information will be returned about the curret state of the mute function.`,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		InitializeConfig()

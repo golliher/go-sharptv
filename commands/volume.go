@@ -9,7 +9,7 @@ import (
 )
 
 var cmdVolume = &cobra.Command{
-	Use:   "volume {0..60|up|down}",
+	Use:   "volume {0..60|up|down|status}",
 	Short: "Set the volume level of the TV.",
 	Long: `Adjust the sound volume for the television.
 
@@ -17,10 +17,13 @@ You may find that a lower volume is more pleasant at night.
 
 Examples:
 
-	sharptv volume 0    # Effectively mutes without showing the mute icon
-	sharptv volume 25   # Set TV to a little less than half volume.
-	sharptv volume 60   # Blast the volume as loud as it will go!
-	sharptv volume down # Reduce the volume by owe
+	go-sharptv volume 0    # Effectively mutes without showing the mute icon.
+	go-sharptv volume 25   # Set TV to a little less than half volume.
+	go-sharptv volume 60   # Blast the volume as loud as it will go!
+	go-sharptv volume down # Reduce the volume by one.
+	go-sharptv status      # Returns information about the current volume level.
+
+
     `,
 	Run: func(cmd *cobra.Command, args []string) {
 

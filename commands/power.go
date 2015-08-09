@@ -61,10 +61,11 @@ var cmdOn = &cobra.Command{
 }
 
 var cmdPower = &cobra.Command{
-	Use:   "power {on|off}",
+	Use:   "power {on|off|status}",
 	Short: "Turn the TV off or on",
 	Long: `Powers the TV off or on.  If neither subcommand of either "off" nor "on" are
-  specfified, then the power will be toggled from it's current state.`,
+  specfified, then the power will be toggled from it's current state.   If
+	"status" is specified, returns information for the current power state.`,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		InitializeConfig()

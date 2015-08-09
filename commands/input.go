@@ -7,9 +7,14 @@ import (
 )
 
 var cmdInput = &cobra.Command{
-	Use:   "input [TV source input number]",
+	Use:   "input {1-8|tv|status}",
 	Short: "Set the input source",
 	Long: `Adjust the input source to be displayed on the TV
+
+	examples:
+		go-sharptv input 4    # switches to the 4th input source
+		go-sharptv input tv   # switches to the TV tuner
+		go-sharptv input status # Returns information on the current input source
 
   `,
 	Run: func(cmd *cobra.Command, args []string) {

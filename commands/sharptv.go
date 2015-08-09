@@ -15,7 +15,7 @@ var SharptvCmd = &cobra.Command{
 	Short: "sharptv is your command line interface to your television set",
 	Long: `sharptv is the main command, used to control your TV
 
-GoSharpTV is a hobbist project by an owner of a Sharp brand TV for other owners
+Go-SharpTV is a hobbist project by an owner of a Sharp brand TV for other owners
 of Sharp brand TVs.  It is implemented in the the Go programming lanugage.
 
 `,
@@ -50,6 +50,15 @@ func InitializeConfig() {
 	if !viper.IsSet("ip") || !viper.IsSet("port") {
 		fmt.Println("Configuration error.  Both IP and PORT must be set via either config, environment, or flags.")
 		os.Exit(1)
+	}
+
+	inputLables := make(map[int]string)
+
+	// TODO --implement the use of this data in the input command
+
+	inputNames := []string{"input1", "input2", "input3", "input4", "input5", "input6", "input7", "input8"}
+	for i, v := range inputNames {
+		inputLables[i] = viper.GetString(v)
 	}
 
 	// BUG(golliher):  I broke flags when I moved configuration into commands package instead of main globals
