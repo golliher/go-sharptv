@@ -37,10 +37,16 @@ Examples:
 		numericalArgument, err := strconv.Atoi(args[0])
 		if err == nil {
 			if numericalArgument > -1 && numericalArgument < 61 {
-				fmt.Printf("Setting volume to %v\n", args[0])
-				sendToTV("VOLM", args[0])
+				result := sendToTV("VOLM", args[0])
+				if result == "OK" {
+					fmt.Printf("Setting volume to %v\n", args[0])
+				} else {
+					fmt.Println("Unable to set volume.  Is the TV on?")
+					os.Exit(1)
+				}
 			} else {
-				fmt.Printf("Volume specificed is out of range 0 to 60")
+				fmt.Println("Volume specificed is out of range 0 to 60")
+				os.Exit(1)
 				return
 			}
 			return
@@ -49,19 +55,30 @@ Examples:
 		switch args[0] {
 
 		case "down":
-			fmt.Println("Reducing the volume")
-			sendToTV("RCKY", "32")
+			result := sendToTV("RCKY", "32")
+			if result == "OK" {
+				fmt.Println("Reducing the volume")
+			} else {
+				fmt.Println("Unable to set volume.  Is the TV on?")
+				os.Exit(1)
+			}
 
 		case "up":
-			fmt.Println("Increasing the volume")
-			sendToTV("RCKY", "33")
+			result := sendToTV("RCKY", "33")
+			if result == "OK" {
+				fmt.Println("Increasing the volume")
+			} else {
+				fmt.Println("Unable to set volume.  Is the TV on?")
+				os.Exit(1)
+			}
 
 		case "status":
 			result := sendToTV("VOLM", "?")
 			if result != "ERR" {
 				fmt.Printf("Volume is: %v\n", result)
 			} else {
-				fmt.Println("Unable to determine current volume.")
+				fmt.Println("Unable to determine current volume. Is the TV on?")
+				os.Exit(1)
 			}
 
 		default:
