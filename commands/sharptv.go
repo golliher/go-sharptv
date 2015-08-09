@@ -9,6 +9,8 @@ import (
 	"github.com/spf13/viper"
 )
 
+var inputLabelMap map[string]int // map of input labels e.g. inputLabels[1] == ""
+
 // SharptvCmd is the root command
 var SharptvCmd = &cobra.Command{
 	Use:   "sharptv",
@@ -52,13 +54,16 @@ func InitializeConfig() {
 		os.Exit(1)
 	}
 
-	inputLables := make(map[int]string)
-
 	// TODO --implement the use of this data in the input command
+
+	inputLabelMap = make(map[string]int)
 
 	inputNames := []string{"input1", "input2", "input3", "input4", "input5", "input6", "input7", "input8"}
 	for i, v := range inputNames {
-		inputLables[i] = viper.GetString(v)
+		if viper.IsSet(v) {
+			inputname := viper.GetString(v)
+			inputLabelMap[inputname] = i + 1
+		}
 	}
 
 	// BUG(golliher):  I broke flags when I moved configuration into commands package instead of main globals
