@@ -26,6 +26,10 @@ Originally developed and tested for the one SharpTV I own:
 * Protocol Version 0100
 * Firmware Version 222U1302091
 
+# Incompatible equipment
+* Model LC-43LE653U  (2015 43") has been confired by Sharp representative to not support IP CONTROL.
+Not all Smart TVs support IP CONTROL.   Some 2015 models do; check the detailed specs before purchasing if IP CONTROL is important to you.
+
 # Installing
 
 For now do something like this:
