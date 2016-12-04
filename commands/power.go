@@ -12,20 +12,13 @@ var cmdOff = &cobra.Command{
 	Long:  `Powers the TV off.  It is equivalent to the command "power off".`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		InitializeConfig()
-
 		switch {
 		case len(args) == 0:
+
 			{
-				result := sendToTV("POWR", "0")
-				switch result {
-				case "ERR":
-					fmt.Println("Something went wrong.  Attempted to turn TV off and failed.")
-				case "OK":
-					return
-				default:
-					fmt.Printf("Warning: unexpected result >%v<\n\n", result)
-				}
+				// BUG NEEDS ERROR HANDLING
+				tv.PowerOff()
+
 			}
 		default:
 			cmd.Usage()
@@ -38,8 +31,6 @@ var cmdOn = &cobra.Command{
 	Short: "Turn the TV on",
 	Long:  `Powers the TV on.  It is equivalent to the command "power on".`,
 	Run: func(cmd *cobra.Command, args []string) {
-
-		InitializeConfig()
 
 		switch {
 		case len(args) == 0:
@@ -67,8 +58,6 @@ var cmdPower = &cobra.Command{
   specfified, then the power will be toggled from it's current state.   If
 	"status" is specified, returns information for the current power state.`,
 	Run: func(cmd *cobra.Command, args []string) {
-
-		InitializeConfig()
 
 		switch {
 		case len(args) == 0:
@@ -116,5 +105,4 @@ func init() {
 	SharptvCmd.AddCommand(cmdPower)
 	SharptvCmd.AddCommand(cmdOn)
 	SharptvCmd.AddCommand(cmdOff)
-
 }

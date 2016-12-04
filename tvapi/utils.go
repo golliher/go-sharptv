@@ -7,6 +7,39 @@ import (
 	"time"
 )
 
+type TV struct {
+	IP   string
+	Port string
+}
+
+func (tv TV) PowerOff() error {
+	result := tv.Send("POWR", "0")
+	switch result {
+	case "ERR":
+		fmt.Println("Something went wrong.  Attempted to turn TV on and failed.")
+	case "OK":
+		return nil
+	default:
+		fmt.Printf("Warning: unexpected result >%v<\n\n", result)
+	}
+
+	return nil
+}
+
+func (tv TV) PowerOn() error {
+	result := tv.Send("POWR", "1")
+	switch result {
+	case "ERR":
+		fmt.Println("Something went wrong.  Attempted to turn TV on and failed.")
+	case "OK":
+		return nil
+	default:
+		fmt.Printf("Warning: unexpected result >%v<\n\n", result)
+	}
+
+	return nil
+}
+
 // Pull out the characters up to the first \r
 func parseResult(resultstring []byte) string {
 	parsed := strings.Split(string(resultstring), "\r")
@@ -14,10 +47,10 @@ func parseResult(resultstring []byte) string {
 }
 
 // Send transmits Sharp Aquos API commands to the Television over the network
-func Send(sharpCommand string, sharpParameter string, ip string, port string) string {
+func (tv TV) Send(sharpCommand string, sharpParameter string) string {
 	cmdString := fmt.Sprintf("%4s%-4s\r", sharpCommand, sharpParameter)
 
-	connectString := fmt.Sprintf("%s:%s", ip, port)
+	connectString := fmt.Sprintf("%s:%s", tv.IP, tv.Port)
 	conn, err := net.DialTimeout("tcp", connectString, time.Duration(100*time.Millisecond))
 
 	if err != nil {

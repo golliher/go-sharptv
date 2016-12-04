@@ -9,6 +9,8 @@ import (
 	"github.com/spf13/viper"
 )
 
+var tv tvapi.TV
+
 var inputLabelMap map[string]int // map of input labels e.g. inputLabels[1] == ""
 
 // SharptvCmd is the root command
@@ -65,24 +67,14 @@ func InitializeConfig() {
 			inputLabelMap[inputname] = i + 1
 		}
 	}
-
-	// BUG(golliher):  I broke flags when I moved configuration into commands package instead of main globals
-	// Setup global flags
-	// commands.SharptvCmd.PersistentFlags().BoolP("debug", "d", false, "Print debug messages")
-	// viper.BindPFlag("debug", commands.SharptvCmd.PersistentFlags().Lookup("debug"))
-
-	// Start using configuration
-
-	// if viper.GetBool("debug") {
-	// 	fmt.Println("debug enabled")
-	// }
-
 }
 
 func sendToTV(sharpCommand string, sharpParameter string) string {
+	return tv.Send(sharpCommand, sharpParameter)
+}
 
-	ip := viper.GetString("ip")
-	port := viper.GetString("port")
-
-	return tvapi.Send(sharpCommand, sharpParameter, ip, port)
+func init() {
+	InitializeConfig()
+	tv.IP = viper.GetString("ip")
+	tv.Port = viper.GetString("port")
 }

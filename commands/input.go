@@ -22,8 +22,6 @@ var cmdInput = &cobra.Command{
   `,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		InitializeConfig()
-
 		switch {
 
 		case len(args) == 1:

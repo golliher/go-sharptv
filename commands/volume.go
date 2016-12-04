@@ -32,8 +32,6 @@ Examples:
 			os.Exit(1)
 		}
 
-		InitializeConfig()
-
 		numericalArgument, err := strconv.Atoi(args[0])
 		if err == nil {
 			if numericalArgument > -1 && numericalArgument < 61 {

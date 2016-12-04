@@ -14,8 +14,6 @@ var cmdMute = &cobra.Command{
 	specified, then information will be returned about the curret state of the mute function.`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		InitializeConfig()
-
 		switch {
 		case len(args) > 1:
 			cmd.Usage()
