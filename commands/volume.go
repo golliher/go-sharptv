@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/golliher/go-sharptv/internal/github.com/spf13/cobra"
 )
@@ -32,46 +33,33 @@ Examples:
 			os.Exit(1)
 		}
 
-		numericalArgument, err := strconv.Atoi(args[0])
+		// If we can convert to integer, assume user is setting volume to value
+		_, err := strconv.Atoi(args[0])
 		if err == nil {
-			if numericalArgument > -1 && numericalArgument < 61 {
-				result := sendToTV("VOLM", args[0])
-				if result == "OK" {
-					fmt.Printf("Setting volume to %v\n", args[0])
-				} else {
-					fmt.Println("Unable to set volume.  Is the TV on?")
-					os.Exit(1)
-				}
-			} else {
-				fmt.Println("Volume specificed is out of range 0 to 60")
-				os.Exit(1)
-				return
-			}
-			return
+			err := tv.SetVolume(args[0])
+			checkErr(err)
+			os.Exit(0)
 		}
 
+		// Otherwise user has given a sub-command string
 		switch args[0] {
 
 		case "down":
-			result := sendToTV("RCKY", "32")
-			if result == "OK" {
-				fmt.Println("Reducing the volume")
-			} else {
-				fmt.Println("Unable to set volume.  Is the TV on?")
-				os.Exit(1)
-			}
+			err := tv.DecreaseVolume()
+			checkErr(err)
+			time.Sleep(10 * time.Millisecond)
+			volume, _ := tv.GetVolume()
+			fmt.Printf("Volume decreased to %s\n", volume)
 
 		case "up":
-			result := sendToTV("RCKY", "33")
-			if result == "OK" {
-				fmt.Println("Increasing the volume")
-			} else {
-				fmt.Println("Unable to set volume.  Is the TV on?")
-				os.Exit(1)
-			}
+			err := tv.IncreaseVolume()
+			checkErr(err)
+			time.Sleep(10 * time.Millisecond)
+			volume, _ := tv.GetVolume()
+			fmt.Printf("Volume increased to %s\n", volume)
 
 		case "status":
-			result := sendToTV("VOLM", "?")
+			result, _ := tv.GetVolume()
 			if result != "ERR" {
 				fmt.Printf("Volume is: %v\n", result)
 			} else {
@@ -82,7 +70,6 @@ Examples:
 		default:
 			cmd.Usage()
 		}
-
 	},
 }
 

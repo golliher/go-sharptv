@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"strconv"
-	"time"
 
 	"github.com/golliher/go-sharptv/internal/github.com/spf13/cobra"
 )
@@ -28,36 +27,40 @@ var cmdInput = &cobra.Command{
 			switch args[0] {
 
 			case "status":
-				result := sendToTV("IAVD", "?")
-				if result != "ERR" {
+				input, err := tv.GetInput()
+				checkErr(err)
 
-					// Find and print the friendly name
-					for key := range inputLabelMap {
-						s, _ := strconv.Atoi(result)
-						if inputLabelMap[key] == s {
-							fmt.Printf("Input is: %s (%s)\n", result, key)
-							return
-						}
+				// Find and print the friendly name
+				for friendly_name := range inputLabelMap {
+					if strconv.Itoa(inputLabelMap[friendly_name]) == input {
+						fmt.Printf("Input is: %d (%s)\n",
+							input, friendly_name)
+						return
 					}
-					fmt.Printf("Input is: %s\n", result)
-
 				}
+				fmt.Printf("Input is: %d\n", input)
+
 			case "tv":
-				result := sendToTV("ITVD", "0")
-				if result == "OK" {
+				err := tv.SetInput("0")
+				if err != nil {
 					fmt.Println("Switched input TV")
 				} else {
 					fmt.Println("Unable to switch to TV")
 					os.Exit(1)
 				}
 			case "1", "2", "3", "4", "5", "6", "7", "8", "9":
-				result := sendToTV("IAVD", args[0])
-				if result == "OK" {
-					fmt.Printf("Input source changed to %v\n", args[0])
-				} else {
-					fmt.Printf("Unable to set source to %s.  '%s' is not valid.\n", args[0], args[0])
-					os.Exit(1)
+
+				input, err := tv.GetInput()
+				checkErr(err)
+
+				if input == args[0] {
+					fmt.Println("That is already the active source.")
+					os.Exit(0)
 				}
+
+				err = tv.SetInput(args[0])
+				checkErr(err)
+				fmt.Println("Input source changed to %v\n", args[0])
 			default:
 
 				// Finally we check to see if we have a match in the
@@ -65,26 +68,18 @@ var cmdInput = &cobra.Command{
 				if inputLabelMap[args[0]] != 0 {
 
 					s := strconv.Itoa(inputLabelMap[args[0]])
-					result := sendToTV("IAVD", s)
-					if result == "OK" {
-						fmt.Printf("Input source changed to %v\n", args[0])
-					} else {
-						// A possible reason is that is already the source
-						// To be extra helpful we check to see if that is the
-						// case before decided to exit with success for fail.
 
-						// BUG(golliher):  This fails likley a timing issue with
-						// trying to reconnect so quickly, Hack is to sleep
-						// 10 Milliseconds seems to be enough on my system.
-						time.Sleep(10 * time.Millisecond)
-						result = sendToTV("IAVD", "?")
-						if result == s {
-							fmt.Println("That is already the active source.")
-							os.Exit(0)
-						}
-						fmt.Printf("Unable to set source to %s.\n", args[0])
-						os.Exit(1)
+					input, err := tv.GetInput()
+					checkErr(err)
+
+					if input == s {
+						fmt.Println("That is already the active source.")
+						os.Exit(0)
 					}
+
+					err = tv.SetInput(s)
+					checkErr(err)
+					fmt.Println("Input source changed to %v\n", args[0])
 
 				} else {
 					// We've tried everything to match the users source request

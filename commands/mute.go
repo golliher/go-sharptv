@@ -2,6 +2,7 @@ package commands
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/golliher/go-sharptv/internal/github.com/spf13/cobra"
 )
@@ -18,30 +19,36 @@ var cmdMute = &cobra.Command{
 		case len(args) > 1:
 			cmd.Usage()
 		case len(args) == 0:
-			fmt.Println("Toggling mute.")
-			sendToTV("MUTE", "0000")
-
-		case args[0] == "on":
-			fmt.Println("Turning on mute.  This will silence the TV.")
-			sendToTV("MUTE", "0001")
-
-		case args[0] == "off":
-			fmt.Println("Turning off mute.  This will return TV to the previous volume.")
-			sendToTV("MUTE", "0002")
-
-		case args[0] == "status":
-			result := sendToTV("MUTE", "?")
-			switch result {
-			case "1":
-				fmt.Println("TV is muted")
-			case "2":
-				fmt.Println("TV is not muted")
-			case "ERR":
-				fmt.Println("TV responded with ERR.   Is it on?")
-			default:
-				fmt.Printf("Warning: unexpected result >%v<\n\n", result)
+			err := tv.ToggleMute()
+			checkErr(err)
+			time.Sleep(100 * time.Millisecond)
+			if tv.IsMuted() {
+				fmt.Println("Mute toggled to MUTED")
+			} else {
+				fmt.Println("Mute toggled to UNMUTED")
 			}
 
+		case args[0] == "on":
+			err := tv.Mute()
+			checkErr(err)
+			fmt.Println("Turning on mute. This will silence the TV and remeber the volume.")
+
+		case args[0] == "off":
+			err := tv.Unmute()
+			checkErr(err)
+			fmt.Println("Unmuted. This returns TV to the previous volume.")
+
+		case args[0] == "status":
+			if !tv.IsOn() {
+				fmt.Println("TV is OFF. Mute has no effect.")
+				return
+			}
+			switch tv.IsMuted() {
+			case true:
+				fmt.Println("TV is muted")
+			case false:
+				fmt.Println("TV is not muted")
+			}
 		}
 	},
 }

@@ -69,8 +69,11 @@ func InitializeConfig() {
 	}
 }
 
-func sendToTV(sharpCommand string, sharpParameter string) string {
-	return tv.Send(sharpCommand, sharpParameter)
+func checkErr(err error) {
+	if err != nil {
+		fmt.Println("ERROR:", err)
+		os.Exit(1)
+	}
 }
 
 func init() {

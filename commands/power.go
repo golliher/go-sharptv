@@ -14,11 +14,9 @@ var cmdOff = &cobra.Command{
 
 		switch {
 		case len(args) == 0:
-
 			{
-				// BUG NEEDS ERROR HANDLING
-				tv.PowerOff()
-
+				err := tv.PowerOff()
+				checkErr(err)
 			}
 		default:
 			cmd.Usage()
@@ -31,19 +29,11 @@ var cmdOn = &cobra.Command{
 	Short: "Turn the TV on",
 	Long:  `Powers the TV on.  It is equivalent to the command "power on".`,
 	Run: func(cmd *cobra.Command, args []string) {
-
 		switch {
 		case len(args) == 0:
 			{
-				result := sendToTV("POWR", "1")
-				switch result {
-				case "ERR":
-					fmt.Println("Something went wrong.  Attempted to turn TV on and failed.")
-				case "OK":
-					return
-				default:
-					fmt.Printf("Warning: unexpected result >%v<\n\n", result)
-				}
+				err := tv.PowerOn()
+				checkErr(err)
 			}
 		default:
 			cmd.Usage()
@@ -62,39 +52,41 @@ var cmdPower = &cobra.Command{
 		switch {
 		case len(args) == 0:
 			{
-				// Toggle power if now argument given to power command
-				result := sendToTV("POWR", "?")
-				switch result {
-				case "1":
-					sendToTV("POWR", "0")
-				case "0":
-					sendToTV("POWR", "1")
-				default:
-					fmt.Printf("Warning: unexpected result >%v<\n\n", result)
+				// Toggle power if no argument given to power command
+
+				if tv.IsOn() {
+					err := tv.PowerOff()
+					checkErr(err)
+				} else {
+					err := tv.PowerOn()
+					checkErr(err)
 				}
 			}
 		case len(args) > 1:
 			cmd.Usage()
 		case args[0] == "on":
-			fmt.Println("Turning on the TV.")
-			sendToTV("POWR", "1")
-		case args[0] == "off":
-			fmt.Println("Turning off the TV.")
-			sendToTV("POWR", "0")
-
-		case args[0] == "status":
-
-			result := sendToTV("POWR", "?")
-
-			switch result {
-			case "1":
-				fmt.Println("TV is ON")
-			case "0":
-				fmt.Println("TV is OFF")
-			default:
-				fmt.Printf("Warning: unexpected result >%v<\n\n", result)
+			if tv.IsOn() {
+				fmt.Println("TV is already on")
+				return
 			}
-
+			fmt.Println("Turning on the TV.")
+			err := tv.PowerOn()
+			checkErr(err)
+		case args[0] == "off":
+			if tv.IsOff() {
+				fmt.Println("TV is already off")
+				return
+			}
+			fmt.Println("Turning off the TV.")
+			err := tv.PowerOff()
+			checkErr(err)
+		case args[0] == "status":
+			switch tv.IsOn() {
+			case true:
+				fmt.Println("TV is ON")
+			case false:
+				fmt.Println("TV is OFF")
+			}
 		default:
 			cmd.Usage()
 		}
